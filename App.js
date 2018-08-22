@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import {
-  Text,
-  View,
-  Alert,
-  Platform,
   StyleSheet,
+  Alert,
+  View,
+  Text,
   TouchableOpacity,
+  VibrationIOS,
+  Platform,
   PermissionsAndroid
 } from 'react-native'
 
@@ -54,7 +55,7 @@ export default class QRCodeScreen extends Component {
 
   _onBarCodeRead(result) {
     if (result && this.state.read == "Ready") {
-      alert(result.type+"\n\n"+result.data)
+      alert(result.type+"\n"+result.data)
       this.setState({ read: "Coba Lagi", data: result.data, scanning: false })
     }
   }
@@ -65,34 +66,36 @@ export default class QRCodeScreen extends Component {
     }
     setTimeout(() => {
       this.setState({ scanning: true })
-    },300)
+    },800)
   }
 
   render() {
     let { read, scanning } = this.state
     if (scanning && read == "Ready") {
       return (
+
         <View style={{height:'100%'}}>
-          <Camera
-            onBarCodeRead={this._onBarCodeRead}
-            style={styles.camera}
-            ref={cam => this.camera = cam}
-            aspect={Camera.constants.Aspect.fill}
-          >
-            <Text style={styles.titleText}>QR CODE SCANNER</Text>
-            <View style={styles.rectangleContainer}>
-              <View style={styles.rectangle}/>
-            </View>
-            <TouchableOpacity onPress={this._onPress.bind(this)}>
-              <View style={styles.cancelButton}>
-                  <Text style={styles.cancelButtonText}>{this.state.read}</Text>
-              </View>
-            </TouchableOpacity>
-          </Camera>
-          <View style={styles.dataContainer}>
-            <Text style={[styles.dataText, {marginLeft:10, marginRight:10}]}>{this.state.data}</Text>
+        <Camera
+          onBarCodeRead={this._onBarCodeRead}
+          style={styles.camera}
+          ref={cam => this.camera = cam}
+          aspect={Camera.constants.Aspect.fill}
+        >
+          <Text style={styles.titleText}>QR CODE SCANNER</Text>
+          <View style={styles.rectangleContainer}>
+            <View style={styles.rectangle}/>
           </View>
+          <TouchableOpacity onPress={this._onPress.bind(this)}>
+            <View style={styles.cancelButton}>
+                <Text style={styles.cancelButtonText}>{this.state.read}</Text>
+            </View>
+          </TouchableOpacity>
+        </Camera>
+        <View style={styles.dataContainer}>
+          <Text style={[styles.dataText, {marginLeft:10, marginRight:10}]}>{this.state.data}</Text>
         </View>
+      </View>
+
       )
     } else {
       return (
@@ -126,12 +129,14 @@ const styles = StyleSheet.create({
     height: '90%',
     alignItems: 'center',
   },
+
   rectangleContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
   },
+
   rectangle: {
     height: 250,
     width: 250,
@@ -139,6 +144,7 @@ const styles = StyleSheet.create({
     borderColor: '#00FF00',
     backgroundColor: 'transparent',
   },
+
   cancelButton: {
     flexDirection: 'row',
     justifyContent: 'center',
