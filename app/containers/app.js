@@ -9,8 +9,10 @@ import {
 import { Router, Scene, Stack } from 'react-native-router-flux'
 import { connect, Provider } from 'react-redux'
 import Home from '../components/screens/Home'
+import LoginScreen from '../components/screens/LoginScreen'
 import Bantuan from '../components/screens/Bantuan'
 import Setting from '../components/screens/Setting'
+import Scanner from '../components/screens/Scanner'
 import DeviceInfo from '../components/screens/DeviceInfo'
 import About from '../components/screens/About'
 import store from '../store'
@@ -30,6 +32,11 @@ export default class DemoApp extends React.Component {
                    title='Home'
                    panHandlers={null}
                    hideNavBar={true} />
+            <Scene key='login'
+                   component={LoginScreen}
+                   title='LoginScreen'
+                   panHandlers={null}
+                   hideNavBar={true} />
             <Scene key='bantuan'
                    component={Bantuan}
                    title='Bantuan'
@@ -40,6 +47,11 @@ export default class DemoApp extends React.Component {
                    title='Setting'
                    panHandlers={null}
                    hideNavBar={true} />
+            <Scene key='scanner'
+                    component={Scanner}
+                    title='Scanner'
+                    panHandlers={null}
+                    hideNavBar={true} />
             <Scene key='deviceInfo'
                    component={DeviceInfo}
                    title='DeviceInfo'

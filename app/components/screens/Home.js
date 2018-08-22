@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   TouchableOpacity,
+  AsyncStorage,
   Dimensions,
   StyleSheet,
   Image,
@@ -20,12 +21,25 @@ const myIcon = (<Icon name="bars" size={40} color="black" />)
 class Home extends Component {
   constructor(props) {
     super(props)
-
     this.state = {
       username: 'Anonymous',
       location: 'Unknown',
-      height: Dimensions.get('window').height
+      height: Dimensions.get('window').height,
+      ipServer: null
     }
+  }
+
+  componentWillMount() {
+    AsyncStorage.getItem('dataSetting').then((dataSetting)=>{
+      let setting = JSON.parse(dataSetting)
+      this.setState({ ipServer: setting.ipServer })
+      if (setting.ipServer) {
+        AsyncStorage.getItem('dataUser').then((dataUser)=>{
+          let user = JSON.parse(dataUser)
+          this.setState({ username: user.username, location: user.location })
+        })
+      }
+    })
   }
 
   _getTime() {
@@ -44,7 +58,17 @@ class Home extends Component {
 
   render() {
     let { showMenu } = this.props;
-
+    let { ipServer } = this.state;
+    let serverConnectedWarning = null
+    let divide = 25
+    if (!ipServer) {
+      serverConnectedWarning = (
+        <View style={styles.serverWarning}>
+          <Text style={styles.serverWarningText}>Server Not Connected</Text>
+        </View>
+      )
+      divide = 20
+    }
     return (
       <View style={styles.container}>
         <BackgroundImage/>
@@ -52,18 +76,16 @@ class Home extends Component {
           <TouchableOpacity onPress={showMenu}>
           {myIcon}
           </TouchableOpacity>
-          <View style={{bottom: this.state.height*20/100}}>
+          <View style={{bottom: this.state.height*divide/100}}>
             <Text style={styles.titleText}>Selamat {this._getTime()},</Text>
             <Text style={styles.detailText}> {this.state.username} </Text>
           </View>
-          <View style={{bottom: this.state.height*20/100}}>
+          <View style={{bottom: this.state.height*divide/100}}>
             <Text style={styles.titleText}> Location : </Text>
             <Text style={styles.detailText}> {this.state.location} </Text>
           </View>
         </View>
-        <View style={styles.serverWarning}>
-          <Text style={styles.serverWarningText}>Server Not Connected</Text>
-        </View>
+        {serverConnectedWarning}
         <SideBarModal/>
       </View>
     );
@@ -114,7 +136,8 @@ const styles = StyleSheet.create({
       backgroundColor:'red',
       height:80,
       alignItems:'center',
-      justifyContent:'center'
+      justifyContent:'center',
+      bottom: 100
     },
     serverWarningText: {
       fontSize:22,

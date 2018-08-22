@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import {
-  View, Text, TouchableOpacity, TouchableWithoutFeedback
+  View, Text, TouchableOpacity, TouchableWithoutFeedback, AsyncStorage
 } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
@@ -13,21 +13,24 @@ import { menuSetVisibility } from '../actions/sidebar'
 import styles from '../styles/sidebar'
 
 class SidebarModal extends Component {
-  static propTypes = {
-  }
-
   constructor(props) {
     super(props)
-
     this.state = {
       showDeveloperMenu: false,
-      username: this.props.username || 'Anonymous',
-      location: this.props.location || 'Unknown'
+      ipServer: null
     }
 
     this.gotoHome = this.gotoHome.bind(this)
     this.gotoAbout = this.gotoAbout.bind(this)
     this.gotoSetting = this.gotoSetting.bind(this)
+    this.gotoScanner = this.gotoScanner.bind(this)
+  }
+
+  componentWillMount() {
+    AsyncStorage.getItem('dataSetting').then((dataSetting)=>{
+      let setting = JSON.parse(dataSetting)
+      this.setState({ ipServer: setting.ipServer })
+    })
   }
 
   gotoHome() {
@@ -37,6 +40,11 @@ class SidebarModal extends Component {
 
   gotoSetting() {
     Actions.setting()
+    this.props.hideModal()
+  }
+
+  gotoScanner() {
+    Actions.scanner()
     this.props.hideModal()
   }
 
@@ -55,7 +63,7 @@ class SidebarModal extends Component {
     let signInMenus = []
 
       signInMenus.push(
-        <TouchableOpacity onPress={this.gotoHome}>
+        <TouchableOpacity onPress={this.gotoHome} key="home">
           <View style={styles.titleContainer}>
             <Icon name="home" size={30} style={{top:5}} style={{top:5}}/>
             <Text style={[styles.menuModalItem, {marginLeft: 15}]}>Beranda</Text>
@@ -64,7 +72,7 @@ class SidebarModal extends Component {
       )
 
       signInMenus.push(
-          <TouchableOpacity onPress={this.gotoSetting}>
+          <TouchableOpacity onPress={this.gotoSetting} key="setting">
             <View style={styles.titleContainer}>
               <Icon name="gear" size={30} style={{top:5}}/>
               <Text style={styles.menuModalItem}>General Setting</Text>
@@ -72,19 +80,19 @@ class SidebarModal extends Component {
           </TouchableOpacity>
       )
 
-      if (this.state.setting) {
+      if (this.state.ipServer) {
         signInMenus.push(
-            <TouchableOpacity onPress={logout}>
+            <TouchableOpacity onPress={this.gotoScanner} key="scanner">
               <View style={styles.titleContainer}>
-                <Icon name="user" size={30} style={{top:5}}/>
-                <Text style={styles.menuModalItem}> Akun Saya </Text>
+                <Icon name="qrcode" size={30} style={{top:5}}/>
+                <Text style={styles.menuModalItem}>Scanner</Text>
               </View>
             </TouchableOpacity>
         )
       }
 
       signInMenus.push(
-          <TouchableOpacity onPress={this.gotoAbout}>
+          <TouchableOpacity onPress={this.gotoAbout} key="about">
             <View style={styles.titleContainer}>
               <Icon name="info-circle" size={30} style={{top:5}}/>
               <Text style={[styles.menuModalItem, {marginLeft: 15}]}> About </Text>

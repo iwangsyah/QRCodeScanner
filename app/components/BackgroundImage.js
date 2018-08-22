@@ -13,8 +13,6 @@ export default class BackgroundImage extends Component {
         <Image
           style={{
             flex: 1,
-            width: null,
-            height: null,
             resizeMode: 'cover'
           }}
           source={require('../images/ea.jpg')}

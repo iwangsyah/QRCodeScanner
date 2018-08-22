@@ -6,6 +6,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { Actions } from 'react-native-router-flux'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class Bantuan extends Component {
   constructor(props) {
@@ -18,6 +19,18 @@ export default class Bantuan extends Component {
     }
   }
 
+  renderHeader() {
+    return (
+      <View style={styles.containerHeader}>
+        <View style={styles.containerHeaderText}>
+          <Icon name="arrow-left" size={30} style={styles.backIcon} onPress={() => Actions.pop()}/>
+          <Text style={styles.textHeader}> About </Text>
+          <View/>
+        </View>
+      </View>
+    )
+  }
+
   render() {
     let { latitude, longitude } = this.state
 
@@ -27,13 +40,12 @@ export default class Bantuan extends Component {
     }
 
     return(
-      <View style={styles.container}>
-        <Text style={styles.titleText}>About App</Text>
-        <Text style={styles.copyrightText}>Copyright © 2018 Wahyu Irwansyah.</Text>
-        <Text style={styles.copyrightText}>All Rights Reserved.</Text>
-        <TouchableOpacity onPress={() => Actions.pop()} style={{marginTop: 50}}>
-          <Text>Back</Text>
-        </TouchableOpacity>
+      <View>
+        {this.renderHeader()}
+        <View style={styles.container}>
+          <Text style={styles.copyrightText}>Copyright © 2018 Wahyu Irwansyah.</Text>
+          <Text style={styles.copyrightText}>All Rights Reserved.</Text>
+        </View>
       </View>
     )
   }
@@ -41,15 +53,31 @@ export default class Bantuan extends Component {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
       flexDirection: 'column',
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      height:'70%',
     },
-    titleText: {
-      marginBottom: 30,
-      fontSize: 25,
-      color: 'black'
+    containerHeader: {
+      backgroundColor: '#42c3f4',
+      justifyContent:'center',
+      marginBottom: 20,
+      height: 50,
+    },
+    containerHeaderText: {
+      flexDirection:'row',
+      justifyContent:'space-between',
+      alignItems:'center',
+    },
+    textHeader: {
+      fontSize:25,
+      color:'#ffffff',
+      alignSelf:'center',
+      fontWeight:'bold'
+    },
+    backIcon: {
+      left: 20,
+      color: 'white'
     },
     copyrightText: {
       fontSize:15
